@@ -7,10 +7,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.geekbrains.persist.Product;
-import ru.geekbrains.persist.ProductRepository;
+import ru.geekbrains.service.ProductDTO;
+import ru.geekbrains.service.ProductService;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/product")
@@ -18,18 +22,35 @@ public class ProductController {
 
     private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
 
-    private ProductRepository productRepository;
+    private final ProductService productService;
 
     @Autowired
-    public ProductController(ProductRepository productRepository) {
-        this.productRepository = productRepository;
+    public ProductController(ProductService productService) {
+        this.productService = productService;
     }
 
     @GetMapping
-    public String listPage(Model model) {
+    public String listPage(Model model,
+                           @RequestParam("productNameFilter") Optional<String> productNameFilter,
+                           @RequestParam("minPrice") Optional<BigDecimal> minPrice,
+                           @RequestParam("maxPrice") Optional<BigDecimal> maxPrice) {
         logger.info("List page requested");
 
-        model.addAttribute("products", productRepository.findAll());
+        List<ProductDTO> products;
+        if (productNameFilter.isPresent() && !productNameFilter.get().isBlank()) {
+            products = productService.findWithFilter(productNameFilter.get());
+        } else if (minPrice.isPresent() || maxPrice.isPresent()){
+            if (minPrice.isEmpty()) {
+                products = productService.findByPrice(new BigDecimal(0), maxPrice.get());
+            } else if (maxPrice.isEmpty()) {
+                products = productService.findByPrice(minPrice.get(), BigDecimal.valueOf(Integer.MAX_VALUE));
+            } else {
+                products = productService.findByPrice(minPrice.get(), maxPrice.get());
+            }
+        } else {
+            products = productService.findAll();
+        }
+        model.addAttribute("products", products);
         return "product";
     }
 
@@ -37,25 +58,21 @@ public class ProductController {
     public String editPage(@PathVariable("id") Long id, Model model) {
         logger.info("Edit page for id {} requested", id);
 
-        model.addAttribute("product", productRepository.findById(id));
+        model.addAttribute("product", productService.findById(id).orElseThrow(NotFoundException::new));
         return "product_form";
     }
 
     @PostMapping("/update")
-    public String update(@Valid Product product, BindingResult result) {
+    public String update(@Valid @ModelAttribute("product") ProductDTO product, BindingResult result) {
         logger.info("Update endpoint requested");
 
         if (result.hasErrors()) {
             return "product_form";
         }
 
-        if (product.getId() != 0) {
-            logger.info("Updating product with id {}", product.getId());
-            productRepository.update(product);
-        } else {
-            logger.info("Creating new product");
-            productRepository.insert(product);
-        }
+        logger.info("Updating product with id {}", product.getId());
+        productService.save(product);
+
         return "redirect:/product";
     }
 
@@ -63,7 +80,7 @@ public class ProductController {
     public String create(Model model) {
         logger.info("Create new product request");
 
-        model.addAttribute("product", new Product());
+        model.addAttribute("product", new ProductDTO());
         return "product_form";
     }
 
@@ -71,7 +88,7 @@ public class ProductController {
     public String remove(@PathVariable("id") Long id) {
         logger.info("Product delete requested");
 
-        productRepository.delete(id);
+        productService.delete(id);
         return "redirect:/product";
     }
 }

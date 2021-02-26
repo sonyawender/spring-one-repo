@@ -1,42 +1,37 @@
-package ru.geekbrains.persist;
+package ru.geekbrains.service;
 
-import ru.geekbrains.service.ProductDTO;
+import ru.geekbrains.persist.Product;
 
-import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 
-@Entity
-@Table(name = "products")
-public class Product {
+public class ProductDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(unique = true, nullable = false)
+    @NotEmpty
     private String name;
 
-    @Column
     private String description;
 
-    @Column(nullable = false)
+    @NotNull
+    @Positive
     private BigDecimal price;
 
-    public Product() {
+    public ProductDTO() {
     }
 
-    public Product(String name) {
+    public ProductDTO(String name) {
         this.name = name;
     }
 
-    public Product(ProductDTO productDTO) {
-        this.id = productDTO.getId();
-        this.name = productDTO.getName();
-        this.description = productDTO.getDescription();
-        this.price = productDTO.getPrice();
+    public ProductDTO(Product product) {
+        this.id = product.getId();
+        this.name = product.getName();
+        this.description = product.getDescription();
+        this.price = product.getPrice();
     }
 
     public long getId() {

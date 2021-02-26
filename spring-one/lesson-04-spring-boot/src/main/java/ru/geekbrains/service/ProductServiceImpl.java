@@ -1,10 +1,15 @@
 package ru.geekbrains.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.geekbrains.persist.Product;
 import ru.geekbrains.persist.ProductRepository;
+import ru.geekbrains.persist.ProductSpecification;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -35,19 +40,27 @@ public class ProductServiceImpl  implements ProductService {
     }
 
     @Override
-    public List<ProductDTO> findWithFilter(String productNameFilter) {
-        return productRepository.findProductByNameLike(productNameFilter).stream()
-                .map(ProductDTO::new)
-                .collect(Collectors.toList());
-    }
+    public Page<ProductDTO> findWithFilter(String productNameFilter, BigDecimal minPrice, BigDecimal maxPrice,
+                                           Integer page, Integer size, String sortByField) {
+        Specification<Product> spec = Specification.where(null);
+        if (productNameFilter != null && !productNameFilter.isBlank()) {
+            spec = spec.and(ProductSpecification.productNameLike(productNameFilter));
+        }
+        if (minPrice != null) {
+            spec = spec.and(ProductSpecification.minPrice(minPrice));
+        }
+        if (maxPrice != null) {
+            spec = spec.and(ProductSpecification.maxPrice(maxPrice));
+        }
 
-    @Override
-    public List<ProductDTO> findByPrice(BigDecimal minPrice, BigDecimal maxPrice) {
-        return productRepository.findProductsByPrice(minPrice, maxPrice).stream()
-                .map(ProductDTO::new)
-                .collect(Collectors.toList());
-    }
+        if (sortByField != null && !sortByField.isBlank()) {
+            return productRepository.findAll(spec, PageRequest.of(page, size, Sort.by(sortByField)))
+                    .map(ProductDTO::new);
+        }
 
+        return productRepository.findAll(spec, PageRequest.of(page, size))
+                .map(ProductDTO::new);
+    }
 
     @Transactional
     @Override

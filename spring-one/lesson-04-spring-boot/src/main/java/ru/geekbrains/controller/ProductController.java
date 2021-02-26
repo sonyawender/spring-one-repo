@@ -3,17 +3,18 @@ package ru.geekbrains.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import ru.geekbrains.service.ProductDTO;
 import ru.geekbrains.service.ProductService;
 
 import javax.validation.Valid;
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -33,23 +34,20 @@ public class ProductController {
     public String listPage(Model model,
                            @RequestParam("productNameFilter") Optional<String> productNameFilter,
                            @RequestParam("minPrice") Optional<BigDecimal> minPrice,
-                           @RequestParam("maxPrice") Optional<BigDecimal> maxPrice) {
+                           @RequestParam("maxPrice") Optional<BigDecimal> maxPrice,
+                           @RequestParam("page") Optional<Integer> page,
+                           @RequestParam("size") Optional<Integer> size,
+                           @RequestParam("sortByField") Optional<String> sortByField) {
         logger.info("List page requested");
 
-        List<ProductDTO> products;
-        if (productNameFilter.isPresent() && !productNameFilter.get().isBlank()) {
-            products = productService.findWithFilter(productNameFilter.get());
-        } else if (minPrice.isPresent() || maxPrice.isPresent()){
-            if (minPrice.isEmpty()) {
-                products = productService.findByPrice(new BigDecimal(0), maxPrice.get());
-            } else if (maxPrice.isEmpty()) {
-                products = productService.findByPrice(minPrice.get(), BigDecimal.valueOf(Integer.MAX_VALUE));
-            } else {
-                products = productService.findByPrice(minPrice.get(), maxPrice.get());
-            }
-        } else {
-            products = productService.findAll();
-        }
+        Page<ProductDTO> products = productService.findWithFilter(
+                productNameFilter.orElse(null),
+                minPrice.orElse(null),
+                maxPrice.orElse(null),
+                page.orElse(1) - 1,
+                size.orElse(5),
+                sortByField.orElse(null)
+        );
         model.addAttribute("products", products);
         return "product";
     }
@@ -90,5 +88,12 @@ public class ProductController {
 
         productService.delete(id);
         return "redirect:/product";
+    }
+
+    @ExceptionHandler
+    public ModelAndView notFoundExceptionHandler(NotFoundException ex) {
+        ModelAndView mav = new ModelAndView("not_found");
+        mav.setStatus(HttpStatus.NOT_FOUND);
+        return mav;
     }
 }

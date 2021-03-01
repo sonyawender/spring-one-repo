@@ -3,9 +3,6 @@ package ru.geekbrains.persist;
 import ru.geekbrains.service.ProductDTO;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 
 @Entity
@@ -14,7 +11,7 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(unique = true, nullable = false)
     private String name;
@@ -39,11 +36,17 @@ public class Product {
         this.price = productDTO.getPrice();
     }
 
-    public long getId() {
+    public Product(String name, String description, BigDecimal price) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

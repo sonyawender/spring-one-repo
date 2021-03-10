@@ -1,6 +1,6 @@
 package ru.geekbrains.service;
 
-import ru.geekbrains.persist.Product;
+import org.springframework.data.domain.Page;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -12,9 +12,7 @@ public interface ProductService {
 
     Optional<ProductDTO> findById(long id);
 
-    List<ProductDTO> findWithFilter(String productNameFilter);
-
-    List<ProductDTO> findByPrice(BigDecimal minPrice, BigDecimal maxPrice);
+    Page<ProductDTO> findWithFilter(String productNameFilter, BigDecimal minPrice, BigDecimal maxPrice, Integer page, Integer size, String sortByField);
 
     void save(ProductDTO product);
 

@@ -70,4 +70,14 @@ public class Product {
     public void setPrice(BigDecimal price) {
         this.price = price;
     }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", name='" + name +
+                ", description='" + description +
+                ", price=" + price +
+                "}";
+    }
 }

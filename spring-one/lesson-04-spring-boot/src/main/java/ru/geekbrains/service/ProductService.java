@@ -12,9 +12,10 @@ public interface ProductService {
 
     Optional<ProductDTO> findById(long id);
 
-    Page<ProductDTO> findWithFilter(String productNameFilter, BigDecimal minPrice, BigDecimal maxPrice, Integer page, Integer size, String sortByField);
+    Page<ProductDTO> findWithFilter(String productNameFilter, BigDecimal minPrice, BigDecimal maxPrice,
+                                    Integer page, Integer size, String sortByField);
 
     void save(ProductDTO product);
 
-    void delete(long id);
+    void delete(Long id);
 }

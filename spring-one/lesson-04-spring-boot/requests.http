@@ -1,0 +1,32 @@
+GET http://localhost:8080/spring-mvc-app/api/v1/product/all
+
+###
+
+GET http://localhost:8080/spring-mvc-app/api/v1/product/1
+
+###
+
+POST http://localhost:8080/spring-mvc-app/api/v1/product
+Content-Type: application/json
+
+{
+  "name": "Meow",
+  "description": "Test",
+  "price": 10.00
+}
+
+###
+
+PUT http://localhost:8080/spring-mvc-app/api/v1/product
+Content-Type: application/json
+
+{
+  "id": 11,
+  "name": "Cat",
+  "description": "Meow",
+  "price": 999.00
+}
+
+###
+
+DELETE http://localhost:8080/spring-mvc-app/api/v1/product/11

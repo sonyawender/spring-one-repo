@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 
 public class ProductDTO {
 
-    private long id;
+    private Long id;
 
     @NotEmpty
     private String name;
@@ -34,11 +34,11 @@ public class ProductDTO {
         this.price = product.getPrice();
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

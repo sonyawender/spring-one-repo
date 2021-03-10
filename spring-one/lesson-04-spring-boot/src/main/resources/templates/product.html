@@ -42,22 +42,10 @@
             <table class="table table-bordered my-2">
                 <thead>
                 <tr>
-                    <th scope="col">Id
-                        <a th:href="@{/product(page=${param.page}, size=${param.size},
-                        productNameFilter=${param.productNameFilter}, minPrice=${param.minPrice}, maxPrice=${param.maxPrice},
-                        sortByField='id')}"><i class="fa fa-sort-down"></i></a></th>
-                    <th scope="col">Name of product
-                        <a th:href="@{/product(page=${param.page}, size=${param.size},
-                        productNameFilter=${param.productNameFilter}, minPrice=${param.minPrice}, maxPrice=${param.maxPrice},
-                        sortByField='name')}"><i class="fa fa-sort-down"></i></a></th>
-                    <th scope="col">Description
-                        <a th:href="@{/product(page=${param.page}, size=${param.size},
-                        productNameFilter=${param.productNameFilter}, minPrice=${param.minPrice}, maxPrice=${param.maxPrice},
-                        sortByField='description')}"><i class="fa fa-sort-down"></i></a></th>
-                    <th scope="col">Price
-                        <a th:href="@{/product(page=${param.page}, size=${param.size},
-                        productNameFilter=${param.productNameFilter}, minPrice=${param.minPrice}, maxPrice=${param.maxPrice},
-                        sortByField='price')}"><i class="fa fa-sort-down"></i></a></th>
+                    <th scope="col" th:replace="fragments/sort_header :: sort_header ('Id', 'id')"/>
+                    <th scope="col" th:replace="fragments/sort_header :: sort_header ('Name of product', 'name')"/>
+                    <th scope="col" th:replace="fragments/sort_header :: sort_header ('Description', 'description')"/>
+                    <th scope="col" th:replace="fragments/sort_header :: sort_header ('Price', 'price')"/>
                     <th scope="col">Actions</th>
                 </tr>
                 </thead>

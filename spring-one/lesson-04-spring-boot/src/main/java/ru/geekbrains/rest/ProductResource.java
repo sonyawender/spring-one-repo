@@ -49,7 +49,7 @@ public class ProductResource {
         productService.save(productDTO);
     }
 
-    @DeleteMapping("{/id}")
+    @DeleteMapping("/{id}")
     public @ResponseBody void delete(@PathVariable("id") Long id) {
         productService.delete(id);
     }

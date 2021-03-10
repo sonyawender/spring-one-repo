@@ -5,7 +5,7 @@
 
 <body>
 
-<nav th:replace="fragments/head.html :: navbar"/>
+<nav th:replace="fragments/head.html :: navbar ('Products')"/>
 
 <div class="container">
     <div class="row py-2">
@@ -63,7 +63,7 @@
                     </td>
                 </tr>
                 <tr th:unless="${products.hasContent()}">
-                    <td colspan="4">No data found</td>
+                    <td colspan="5">No data found</td>
                 </tr>
                 </tbody>
             </table>

@@ -21,7 +21,7 @@ PUT http://localhost:8080/spring-mvc-app/api/v1/product
 Content-Type: application/json
 
 {
-  "id": 11,
+  "id": 12,
   "name": "Cat",
   "description": "Meow",
   "price": 999.00
@@ -29,4 +29,24 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:8080/spring-mvc-app/api/v1/product/11
+DELETE http://localhost:8080/spring-mvc-app/api/v1/product/12
+
+###
+
+POST http://localhost:8080/spring-mvc-app/api/v1/cart/user/1/product/1?quantity=3
+
+###
+
+POST http://localhost:8080/spring-mvc-app/api/v1/cart/user/1/product/3?quantity=2
+
+###
+
+GET http://localhost:8080/spring-mvc-app/api/v1/cart/user/1
+
+###
+
+POST http://localhost:8080/spring-mvc-app/api/v1/cart/remove/user/1/product/1?quantity=1
+
+###
+
+DELETE http://localhost:8080/spring-mvc-app/api/v1/cart/remove/user/1

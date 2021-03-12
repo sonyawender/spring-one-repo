@@ -1,5 +1,7 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 
 <head th:replace="fragments/head.html :: head"/>
 
@@ -9,7 +11,7 @@
 
 <div class="container">
     <div class="row py-2">
-        <div class="col-12">
+        <div class="col-12" th:if="${#authorization.expression('hasRole(''SUPER_ADMIN'')')}">
             <a class="btn btn-primary" th:href="@{/user/new}">Add new user</a>
         </div>
 
@@ -45,7 +47,7 @@
                     <th scope="col" th:replace="fragments/sort_header :: sort_header ('Id', 'id')"/>
                     <th scope="col" th:replace="fragments/sort_header :: sort_header ('Username', 'username')"/>
                     <th scope="col" th:replace="fragments/sort_header :: sort_header ('Age', 'age')"/>
-                    <th scope="col">Actions</th>
+                    <th scope="col" th:if="${#authorization.expression('hasRole(''SUPER_ADMIN'')')}"Actions/>
                 </tr>
                 </thead>
                 <tbody>
@@ -53,7 +55,7 @@
                     <th th:text="${user.id}" scope="row">1</th>
                     <td th:text="${user.username}">Alex</td>
                     <td th:text="${user.age}">21</td>
-                    <td>
+                    <td th:if="${#authorization.expression('hasRole(''SUPER_ADMIN'')')}">
                         <a class="btn btn-success" th:href="@{/user/{id}(id = ${user.id})}"><i class="fas fa-edit"></i></a>
                         <form class="d-inline" th:method="delete" th:action="@{/user/{id}(id = ${user.id})}">
                             <button type="submit" class="btn btn-danger"><i class="far fa-trash-alt"></i></button>

@@ -9,7 +9,7 @@
 
 <div class="container">
     <div class="row py-2">
-        <div class="col-12">
+        <div class="col-12" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
             <a class="btn btn-primary" th:href="@{/product/new}">Add new product</a>
         </div>
 
@@ -46,7 +46,7 @@
                     <th scope="col" th:replace="fragments/sort_header :: sort_header ('Name of product', 'name')"/>
                     <th scope="col" th:replace="fragments/sort_header :: sort_header ('Description', 'description')"/>
                     <th scope="col" th:replace="fragments/sort_header :: sort_header ('Price', 'price')"/>
-                    <th scope="col">Actions</th>
+                    <th scope="col" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -55,7 +55,7 @@
                     <td th:text="${product.name}">Laptop</td>
                     <td th:text="${product.description}">The last version of Macbook Pro</td>
                     <td th:text="${product.price}">9999</td>
-                    <td>
+                    <td th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
                         <a class="btn btn-success" th:href="@{/product/{id}(id = ${product.id})}"><i class="fas fa-edit"></i></a>
                         <form class="d-inline" th:method="delete" th:action="@{/product/{id}(id = ${product.id})}">
                             <button type="submit" class="btn btn-danger"><i class="far fa-trash-alt"></i></button>

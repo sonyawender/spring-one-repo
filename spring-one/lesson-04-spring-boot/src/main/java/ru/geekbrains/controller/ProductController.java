@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -52,6 +53,7 @@ public class ProductController {
         return "product";
     }
 
+    @Secured({"ROLE_ADMIN"})
     @GetMapping("/{id}")
     public String editPage(@PathVariable("id") Long id, Model model) {
         logger.info("Edit page for id {} requested", id);
@@ -60,6 +62,7 @@ public class ProductController {
         return "product_form";
     }
 
+    @Secured({"ROLE_ADMIN"})
     @PostMapping("/update")
     public String update(@Valid @ModelAttribute("product") ProductDTO product, BindingResult result) {
         logger.info("Update endpoint requested");
@@ -74,6 +77,7 @@ public class ProductController {
         return "redirect:/product";
     }
 
+    @Secured({"ROLE_ADMIN"})
     @GetMapping("/new")
     public String create(Model model) {
         logger.info("Create new product request");
@@ -82,6 +86,7 @@ public class ProductController {
         return "product_form";
     }
 
+    @Secured({"ROLE_ADMIN"})
     @DeleteMapping("/{id}")
     public String remove(@PathVariable("id") Long id) {
         logger.info("Product delete requested");

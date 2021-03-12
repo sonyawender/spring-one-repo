@@ -5,11 +5,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import ru.geekbrains.persist.RoleRepository;
 import ru.geekbrains.service.UserDTO;
 import ru.geekbrains.service.UserService;
 
@@ -24,9 +26,12 @@ public class UserController {
 
     private final UserService userService;
 
+    private final RoleRepository roleRepository;
+
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, RoleRepository roleRepository) {
         this.userService = userService;
+        this.roleRepository = roleRepository;
     }
 
     @GetMapping
@@ -51,18 +56,22 @@ public class UserController {
         return "user";
     }
 
+    @Secured({"ROLE_SUPER_ADMIN"})
     @GetMapping("/{id}")
     public String editPage(@PathVariable("id") Long id, Model model) {
         logger.info("Edit page for id {} requested", id);
 
+        model.addAttribute("roles", roleRepository.findAll());
         model.addAttribute("user", userService.findById(id)
                 .orElseThrow(NotFoundException::new));
         return "user_form";
     }
 
+    @Secured({"ROLE_SUPER_ADMIN"})
     @PostMapping("/update")
     public String update(@Valid @ModelAttribute("user") UserDTO user, BindingResult result, Model model) {
         logger.info("Update endpoint requested");
+        model.addAttribute("roles", roleRepository.findAll());
 
         if (result.hasErrors()) {
             return "user_form";
@@ -77,14 +86,17 @@ public class UserController {
         return "redirect:/user";
     }
 
+
     @GetMapping("/new")
     public String create(Model model) {
         logger.info("Create new user request");
 
+        model.addAttribute("roles", roleRepository.findAll());
         model.addAttribute("user", new UserDTO());
         return "user_form";
     }
 
+    @Secured({"ROLE_SUPER_ADMIN"})
     @DeleteMapping("/{id}")
     public String remove(@PathVariable("id") Long id) {
         logger.info("User delete request");

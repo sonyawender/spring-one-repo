@@ -1,13 +1,13 @@
 package ru.geekbrains.service;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import ru.geekbrains.persist.Role;
 import ru.geekbrains.persist.User;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
-import java.util.Objects;
+import java.util.*;
 
-// DTO
 public class UserDTO {
 
     private Long id;
@@ -27,6 +27,8 @@ public class UserDTO {
 
     private Integer age;
 
+    private Set<Role> roles;
+
     public UserDTO() {
     }
 
@@ -40,6 +42,13 @@ public class UserDTO {
         this.password = user.getPassword();
         this.email = user.getEmail();
         this.age = user.getAge();
+        this.roles = new HashSet<>(user.getRoles());
+    }
+
+    public UserDTO(Role role) {
+        Set<Role> roles = new HashSet<>();
+        roles.add(role);
+        this.roles = roles;
     }
 
     public Long getId() {
@@ -88,6 +97,14 @@ public class UserDTO {
 
     public void setAge(Integer age) {
         this.age = age;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 
     @Override

@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/head.html :: head"/>
+
+<body>
+
+<nav th:replace="fragments/head.html :: navbar ('None')"/>
+
+<div class="container text-center" style="max-width: 400px; margin: 0 auto;">
+    <div class="row py-2">
+        <div class="col-15">
+            <form th:action="@{/login}" method="post">
+                <p class="form-text text-success" th:if="${param.logout != null}">Logout successful</p>
+                <p class="form-text text-success" th:if="${param.signedUp == true}">Registration was successful! Please log in</p>
+                <div class="input-group">
+                    <label for="username">Username:</label>
+                    <input type="text" class="form-control" id="username" name="username" required placeholder="Enter your username">
+                </div>
+                <div class="input-group">
+                    <label for="password">Password:</label>
+                    <input type="password" name="password" id="password" class="form-control" required data-toggle="password" placeholder="Enter your password">
+                </div>
+                <p class="form-text text-danger" th:if="${param.error != null}">Wrong login or password</p>
+                <button type="submit" class="btn btn-primary">Sign in</button>
+                <p class="message">Not registered yet? <a th:href="@{/registration}">Sing up</a></p>
+            </form>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace = "fragments/footer.html :: scripts"/>
+
+</body>
+</html>
